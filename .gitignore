@@ -1,0 +1,14 @@
+# IDE / editors
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Env files (если появятся)
+.env
+

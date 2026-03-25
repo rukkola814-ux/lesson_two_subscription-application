@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Учёт подписок</title>
+
+    <!-- ===== СТИЛИ ===== -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+            margin: 0;
+            padding: 20px;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: background 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(76, 175, 80, 0.08);
+        }
+
+        .subscription {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .subscription-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .delete-btn {
+            background: red;
+        }
+
+        .delete-btn:hover {
+            background: darkred;
+        }
+
+        .total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .empty {
+            padding: 14px 10px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        /* ===== КНОПКА ПЕРЕКЛЮЧЕНИЯ ТЕМЫ (ПРАВЫЙ НИЖНИЙ УГОЛ) ===== */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 22px;
+            line-height: 1;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        body.dark-theme {
+            background: #111827;
+            color: #e5e7eb;
+        }
+
+        body.dark-theme .container {
+            background: #1f2937;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+        }
+
+        body.dark-theme input {
+            background: #374151;
+            color: #f3f4f6;
+            border: 1px solid #4b5563;
+        }
+
+        body.dark-theme input::placeholder {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .subscription {
+            border-bottom: 1px solid #374151;
+        }
+
+        body.dark-theme .back-link {
+            color: #86efac;
+        }
+
+        body.dark-theme .secondary-btn {
+            border-color: #86efac;
+            color: #86efac;
+        }
+
+        body.dark-theme .empty {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <div class="topbar">
+        <a class="back-link" href="index.html" title="На главную">← На главную</a>
+        <span></span>
+    </div>
+
+    <h1>📊 Мои подписки</h1>
+
+    <!-- ===== ФОРМА ДОБАВЛЕНИЯ ===== -->
+    <div class="form">
+        <input type="text" id="name" placeholder="Название подписки">
+        <input type="number" id="price" placeholder="Сумма (₽)">
+        <input type="date" id="date">
+        <button onclick="addSubscription()">Добавить</button>
+        <button type="button" class="secondary-btn" onclick="resetAll()">Очистить всё</button>
+    </div>
+
+    <!-- ===== СПИСОК ===== -->
+    <div id="list"></div>
+
+    <!-- ===== ОБЩАЯ СУММА ===== -->
+    <div class="total" id="total">Итого: 0 ₽</div>
+</div>
+
+<!-- ===== КНОПКА ПЕРЕКЛЮЧЕНИЯ ТЕМЫ ===== -->
+<button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">🌙</button>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // ===== ХРАНЕНИЕ ДАННЫХ =====
+    let subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+
+        const numberFormatter = new Intl.NumberFormat('ru-RU');
+
+        function formatRub(amount) {
+            return numberFormatter.format(amount);
+        }
+
+    // ===== СОХРАНЕНИЕ В localStorage =====
+    function save() {
+        localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+    }
+
+    // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ =====
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeButton(isDark);
+    }
+
+    // ===== ОБНОВЛЕНИЕ ВИДА КНОПКИ ТЕМЫ =====
+    function updateThemeButton(isDark) {
+        const btn = document.getElementById('themeToggle');
+        btn.innerText = isDark ? '☀️' : '🌙';
+        btn.title = isDark ? 'Включить светлую тему' : 'Включить тёмную тему';
+    }
+
+    // ===== ВОССТАНОВЛЕНИЕ ТЕМЫ ПРИ ЗАГРУЗКЕ =====
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const isDark = savedTheme === 'dark';
+
+        if (isDark) {
+            document.body.classList.add('dark-theme');
+        }
+
+        updateThemeButton(isDark);
+    }
+
+    // ===== ДОБАВЛЕНИЕ ПОДПИСКИ =====
+    function addSubscription() {
+            const name = document.getElementById('name').value.trim();
+            const priceRaw = document.getElementById('price').value;
+            const price = Number(priceRaw);
+        const date = document.getElementById('date').value;
+
+            if (!name || !priceRaw || !date) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            if (!Number.isFinite(price) || price <= 0) {
+                alert('Сумма должна быть числом больше 0!');
+            return;
+        }
+
+        subscriptions.push({
+                id: Date.now() + Math.floor(Math.random() * 1000),
+            name,
+            price: Number(price),
+            date
+        });
+
+        save();
+        render();
+
+        // очистка формы
+        document.getElementById('name').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('date').value = '';
+    }
+
+    // ===== УДАЛЕНИЕ =====
+    function deleteSubscription(id) {
+        subscriptions = subscriptions.filter(sub => sub.id !== id);
+        save();
+        render();
+    }
+
+    // ===== ОЧИСТКА ВСЕХ ПОДПИСОК =====
+    function resetAll() {
+        if (!confirm('Точно очистить все подписки?')) return;
+        subscriptions = [];
+        save();
+        render();
+    }
+
+    // ===== ОТРИСОВКА =====
+    function render() {
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+
+        let total = 0;
+
+        if (subscriptions.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty';
+            empty.innerText = 'Пока нет подписок. Добавьте первую запись выше.';
+            list.appendChild(empty);
+            document.getElementById('total').innerText = 'Итого: 0 ₽';
+            return;
+        }
+
+        subscriptions.forEach(sub => {
+            const priceNumber = Number(sub.price) || 0;
+            total += priceNumber;
+
+            const div = document.createElement('div');
+            div.className = 'subscription';
+
+            div.innerHTML = `
+                <div class="subscription-info">
+                    <strong>${sub.name}</strong>
+                    <span>Списание: ${sub.date}</span>
+                    <span>${formatRub(priceNumber)} ₽</span>
+                </div>
+                <button class="delete-btn" onclick="deleteSubscription(${sub.id})">Удалить</button>
+            `;
+
+            list.appendChild(div);
+        });
+
+        document.getElementById('total').innerText = 'Итого: ' + formatRub(total) + ' ₽';
+    }
+
+    // ===== ЗАПУСК =====
+    initTheme();
+    render();
+</script>
+
+</body>
+</html>
