@@ -17,34 +17,39 @@
 <body>
 <div class="container">
     <div class="topbar">
-        <div class="brand">МОИ ПОДПИСКИ</div>
-        <a class="nav-link" href="Приложение подписок.html">Открыть приложение</a>
+        <div class="brand" data-i18n="brand">МОИ ПОДПИСКИ</div>
+        <div class="topbar-actions">
+            <div id="langSwitch" class="lang-switch" role="group">
+                <button type="button" class="lang-btn lang-btn-active" data-lang="ru" aria-pressed="true">RU</button>
+                <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+            </div>
+            <a class="nav-link" data-i18n="navApp" href="Приложение подписок.html">Открыть приложение</a>
+        </div>
     </div>
 
     <div class="hero">
         <div>
-            <h1>Планируйте списания заранее</h1>
-            <p class="lead">Добавляйте подписки, дату списания и сумму. Данные сохраняются в браузере, а тема приложения переключается одной кнопкой.</p>
+            <h1 data-i18n="heroTitle">Планируйте списания заранее</h1>
+            <p class="lead" data-i18n="heroLead">Добавляйте подписки, дату списания и сумму. Данные сохраняются в браузере, а тема приложения переключается одной кнопкой.</p>
 
             <div class="cta">
-                <!-- Переходим на рабочую версию приложения -->
-                <button class="btn btn-primary" onclick="location.href='Приложение подписок.html'">К подпискам</button>
-                <button class="btn btn-ghost" onclick="document.getElementById('howItWorks').scrollIntoView({behavior: 'smooth'})">Как это работает</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='Приложение подписок.html'" data-i18n="ctaPrimary">К подпискам</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('howItWorks').scrollIntoView({behavior: 'smooth'})" data-i18n="ctaHow">Как это работает</button>
             </div>
         </div>
 
         <div class="card">
-            <h2>Что умеет приложение</h2>
+            <h2 data-i18n="cardHeading">Что умеет приложение</h2>
             <ul>
-                <li>Добавлять подписки</li>
-                <li>Считать общий бюджет</li>
-                <li>Удалять ненужные записи</li>
+                <li data-i18n="cardLi1">Добавлять подписки</li>
+                <li data-i18n="cardLi2">Считать общий бюджет</li>
+                <li data-i18n="cardLi3">Удалять ненужные записи</li>
             </ul>
 
             <details id="howItWorks">
-                <summary>Пара слов</summary>
-                <div style="margin-top: 8px; color: #4b5563; line-height: 1.5;">
-                    Откройте страницу приложения, добавьте подписки и смотрите общую сумму. Выбор темы сохраняется в `localStorage`.
+                <summary data-i18n="detailsSummary">Пара слов</summary>
+                <div class="details-hint" data-i18n="detailsHint">
+                    Откройте страницу приложения, добавьте подписки и смотрите общую сумму. Выбор темы сохраняется в localStorage.
                 </div>
             </details>
         </div>
@@ -52,28 +57,32 @@
 
     <div class="features">
         <div class="feature">
-            <h3>Быстро</h3>
-            <div>Одна форма, без регистрации и настроек.</div>
+            <h3 data-i18n="feat1Title">Быстро</h3>
+            <div data-i18n="feat1Text">Одна форма, без регистрации и настроек.</div>
         </div>
         <div class="feature">
-            <h3>Удобно</h3>
-            <div>Список подписок и общий итог внизу.</div>
+            <h3 data-i18n="feat2Title">Удобно</h3>
+            <div data-i18n="feat2Text">Список подписок и общий итог внизу.</div>
         </div>
         <div class="feature">
-            <h3>Автосохранение</h3>
-            <div>Данные остаются даже после перезагрузки страницы.</div>
+            <h3 data-i18n="feat3Title">Автосохранение</h3>
+            <div data-i18n="feat3Text">Данные остаются даже после перезагрузки страницы.</div>
         </div>
     </div>
 
-    <div class="footer">
+    <div class="footer" data-i18n="footerHint">
         Подсказка: кнопку переключения темы найдите в правом нижнем углу.
     </div>
 </div>
 
-<!-- ===== КНОПКА ПЕРЕКЛЮЧЕНИЯ ТЕМЫ ===== -->
 <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">🌙</button>
 
 <!-- ===== JAVASCRIPT ===== -->
+<script src="scripts/index.js"></script>
+</body>
+</html>
+
+
 <script src="scripts/index.js"></script>
 </body>
 </html>
